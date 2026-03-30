@@ -8,6 +8,7 @@
 .extern _DrawRectangle
 .extern _DrawTriangle
 .extern _DrawText
+.extern _IsKeyDown
 
 .text
 .p2align 2
@@ -15,7 +16,7 @@
 _main:
   stp x29, x30, [sp, #-16]!
   mov x29, sp
-  sub sp, sp, #64 ; allocation for local vars
+  sub sp, sp, #80 ; allocation for local vars
 
   mov x0, #800
   mov x1, #450
@@ -33,48 +34,59 @@ _main:
   str x0, [x29, #0] ; x posn
   str x1, [x29, #-8]; y posn
   
-  mov x0, #-5 ; speed.y (per frame)
-  mov x1, #1 ; gravity (per frame)
+  mov x0, #0 ; UP?
+  mov x1, #0 ; DOWN?
   str x0, [x29, #-16]
-  str x1, [x20, #-24]
+  str x1, [x29, #-24]
 
-  mov x0, #3; deltaT (num of frames)
-  mov x1, #0; counter for deltaT
-  str x0, [x29, #-32]
-  str x1, [x29, #-40]
+;  mov x0, #3; deltaT (num of frames)
+;  mov x1, #0; counter for deltaT
+;  str x0, [x29, #-32]
+;  str x1, [x29, #-40]
 
   mov x0, #0; loose
   mov x1, #0; game over?
   str x0, [x29, #-48]
   str x1, [x29, #-56]
 
+;  mov x0, #5 ; movement pixels
+;  str x0, [x29, #-64]
+
+  mov x0, #10; max speed
+  str x0, [x29, #-72]
 _gameloop:
   bl _WindowShouldClose
   cbnz x0, _end
-  
-  // Update
-  ldr x0, [x29, #-56]
-  cmp x0, 0
-  b.gt _render
+ 
+  // Input
+  mov x0, #265; #KEY_UP
+  bl _IsKeyDown
+  str x0, [x29, #-16]
 
+  mov x0, #264; #KEY_DOWN
+  bl _IsKeyDown
+  str x0, [x29, #-24]
+
+  // Update
   ldr x0, [x29, #-8]
   cmp x0, #450
   b.gt _gameover
 
-  ldr x0, [x29, #-32]
-  ldr x1, [x29, #-40]
-  add x1, x1, #1
-  cmp x1, x0
-  
-  b.lt _render
-  
   ldr x0, [x29, #-8]
-  ldr x1, [x29, #-16]
-  ldr x2, [x20, #-24]
-  add x0, x0, x1; posn = posn + speed
-  add x1, x1, x2;speed =speed + gravity
+  mov x2, #0
+  ldr x2, [x29, #-16]
+  ldr x3, [x29, #-24]
+  cmp x2, #0
+  b.eq _checkdown
+  sub x1, x1, #5
+_checkdown:
+  cmp x3, #0
+  b.eq _applyPhy
+  add x1, x1, #5
+
+_applyPhy:
+  add x0, x0, x1; posn = posn + step
   str x0, [x29, #-8]
-  str x1, [x29, #-16]
   mov x1, #0
 
 _render:
@@ -104,7 +116,7 @@ _render:
 _end:
   bl _CloseWindow
   mov w0, #0
-  add sp, sp, #64 ; deallocation
+  add sp, sp, #80 ; deallocation
   ldp x29, x30, [sp], #16
   ret 
 
