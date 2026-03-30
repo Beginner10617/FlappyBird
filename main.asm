@@ -15,7 +15,7 @@
 _main:
   stp x29, x30, [sp, #-16]!
   mov x29, sp
-  sub sp, sp, #48 ; allocation for local vars
+  sub sp, sp, #64 ; allocation for local vars
 
   mov x0, #800
   mov x1, #450
@@ -43,11 +43,24 @@ _main:
   str x0, [x29, #-32]
   str x1, [x29, #-40]
 
+  mov x0, #0; loose
+  mov x1, #0; game over?
+  str x0, [x29, #-48]
+  str x1, [x29, #-56]
+
 _gameloop:
   bl _WindowShouldClose
   cbnz x0, _end
   
   // Update
+  ldr x0, [x29, #-56]
+  cmp x0, 0
+  b.gt _render
+
+  ldr x0, [x29, #-8]
+  cmp x0, #450
+  b.gt _gameover
+
   ldr x0, [x29, #-32]
   ldr x1, [x29, #-40]
   add x1, x1, #1
@@ -83,14 +96,29 @@ _render:
 
   bl _EndDrawing
 
-  b _gameloop
+  ldr x0, [x29, #-56]
+  cmp x0, #0
+  b.eq _gameloop
+  b _gameover
+
 _end:
   bl _CloseWindow
   mov w0, #0
-  add sp, sp, #48 ; deallocation
+  add sp, sp, #64 ; deallocation
   ldp x29, x30, [sp], #16
   ret 
 
+_gameover:
+  adrp x0, GAME_OVER@PAGE
+  add x0, x0, GAME_OVER@PAGEOFF
+  mov x1, #190
+  mov x2, #200
+  mov x3, #70
+  mov w4, #0xff0000ff
+  bl _DrawText
+  mov x0, #1
+  str x0, [x29, #-56]
+  b _gameloop
 
 .data 
 TITLE:
