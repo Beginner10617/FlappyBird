@@ -168,10 +168,11 @@ _blockupdate:
   str x0, [x19] ; x posn of the block
 
   cbz x23, _blockupdate
-  mov x22, #420
+  mov x22, #419
   bl _rand
   udiv x5, x0, x22
   msub x0, x5, x22, x0
+  add x0, x0, #1
   str x0, [x20] ; height of the block
 
 
@@ -196,8 +197,6 @@ _render:
   cmp x0, #0
 
   b.eq _notactiveloop
-  
-
 
   sub x19, x29, #48
   sub x20, x29, #152
@@ -207,10 +206,24 @@ _blockdrawloop:
   ldr x0, [x19]
   ldr x1, [x20]
   sub x1, x22, x1
+  mov x24, x1
   mov x2, #20
   mov x3, #450
   mov w4, #0xffffffff
   bl _DrawRectangle
+
+  ldr x0, [x20]
+  cbz x0, _zeroheight
+
+  ldr x0, [x19]
+  mov x1, x24
+  sub x1, x1, #480
+  mov x2, #20
+  mov x3, #450
+  mov w4, #0xffffffff
+  bl _DrawRectangle
+
+_zeroheight:
   sub x19, x19, #8
   sub x20, x20, #8
   sub x21, x21, #1
