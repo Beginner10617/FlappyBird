@@ -7,3 +7,4 @@ clang main.o -o main \
   -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 rm main.o
 ./main
+rm main

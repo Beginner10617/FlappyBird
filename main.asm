@@ -95,7 +95,7 @@ _gameloop:
   cbnz x0, _alreadyactive
   ldr x0, [x29, #-136]
   add x0,x0, #1
-  str x0, [x29, #-144]
+  str x0, [x29, #-136]
   cmp x0, #120
   b.lt _alreadyactive
   mov x0, #1
@@ -116,9 +116,8 @@ _alreadyactive:
   ldr x0, [x29, #-40]
   cmp x0, 0
   b.gt _render
-  
+  mov x1, #0
   ldr x0, [x29, #-8]
-  mov x2, #0
   ldr x2, [x29, #-16]
   ldr x3, [x29, #-24]
   cmp x2, #0
@@ -147,185 +146,33 @@ _updateposn:
   ldr x1, [x1]
 
 
-  ldr x2, [x29, #-144]
 
   ; 11 BLOCKS 
-  ldr x0, [x29, #-48]
-  sub x0, x0, x1
+  sub x19, x29, #40
+  sub x20, x29, #144
+  mov x21, #0
+  ldr x23, [x29, #-144]
+_blockupdate:
+  add x21, x21, #1
+  cmp x21, #11
+  b.ge _render
+  sub x19, x19, #8
+  sub x20, x20, #8
+
+  ldr x0, [x19]
+  sub x0, x0, #1
+  str x0, [x19] ; x posn of the block
   cmp x0, #-20
-  b.gt _continue1
+  b.gt _blockupdate
   add x0, x0, #880 
-  cbz x2, _continue1
-  mov x3, x0
-  mov x4, #390
+  str x0, [x19] ; x posn of the block
+
+  cbz x23, _blockupdate
+  mov x22, #420
   bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-152] ; height of the block
-  mov x0, x3
-_continue1:
-  str x0, [x29, #-48] ; x posn of the block
-
-  ldr x0, [x29, #-56]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue2
-  add x0, x0, #880 
-  cbz x2, _continue2
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-160] ; height of the block
-  mov x0, x3
-
-_continue2:
-  str x0, [x29, #-56] 
-   
-  ldr x0, [x29, #-64]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue3
-  add x0, x0, #880 
-  cbz x2, _continue3
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-168] ; height of the block
-  mov x0, x3
-
-_continue3:
-  str x0, [x29, #-64] 
-   
-  ldr x0, [x29, #-72]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue4
-  add x0, x0, #880 
-  cbz x2, _continue4
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-176] ; height of the block
-  mov x0, x3
-
-_continue4:
-  str x0, [x29, #-72] 
-   
-  ldr x0, [x29, #-80]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue5
-  add x0, x0, #880 
-  cbz x2, _continue5
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-184] ; height of the block
-  mov x0, x3
-
-_continue5:
-  str x0, [x29, #-80] 
-   
-  ldr x0, [x29, #-88]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue6
-  add x0, x0, #880 
-  cbz x2, _continue6
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-192] ; height of the block
-  mov x0, x3
-
-_continue6:
-  str x0, [x29, #-88] 
-   
-  ldr x0, [x29, #-96]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue7
-  add x0, x0, #880 
-  cbz x2, _continue7
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-200] ; height of the block
-  mov x0, x3
-
-_continue7:
-  str x0, [x29, #-96] 
-   
-  ldr x0, [x29, #-104]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue8
-  add x0, x0, #880 
-  cbz x2, _continue8
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-208] ; height of the block
-  mov x0, x3
-
-_continue8:
-  str x0, [x29, #-104] 
-   
-  ldr x0, [x29, #-112]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue9
-  add x0, x0, #880 
-  cbz x2, _continue9
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-216] ; height of the block
-  mov x0, x3
-
-_continue9:
-  str x0, [x29, #-112] 
-   
-  ldr x0, [x29, #-120]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue10
-  add x0, x0, #880 
-  cbz x2, _continue10
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-224] ; height of the block
-  mov x0, x3
-
-_continue10:
-  str x0, [x29, #-120] 
-   
-  ldr x0, [x29, #-128]
-  sub x0, x0, x1
-  cmp x0, #-20
-  b.gt _continue11
-  add x0, x0, #880 
-  cbz x2, _continue11
-  mov x3, x0
-  bl _rand
-  udiv x5, x0, x4
-  msub x0, x5, x4, x0
-  str x0, [x29, #-232] ; height of the block
-  mov x0, x3
-
-_continue11:
-  str x0, [x29, #-128]
-
+  udiv x5, x0, x22
+  msub x0, x5, x22, x0
+  str x0, [x20] ; height of the block
 
 
 _render:
@@ -352,53 +199,22 @@ _render:
   
 
 
-
-  mov x10, x29
-  sub x10, x10, #48
-  mov x11, x29
-  sub x11, x11, #152
-  mov x9, #11
-
+  sub x19, x29, #48
+  sub x20, x29, #152
+  mov x21, #11
+  mov x22, #450
 _blockdrawloop:
-
-  mov x7, x0
-  ;debug
-  adrp x0, DEBUG@PAGE
-  add x0, x0, DEBUG@PAGEOFF
-  bl _printf
-  mov x0, x7
-
-
-
-  ldr x0, [x10]
-  ldr x1, [x11]
-  add x1, x1, #30
+  ldr x0, [x19]
+  ldr x1, [x20]
+  sub x1, x22, x1
   mov x2, #20
   mov x3, #450
   mov w4, #0xffffffff
   bl _DrawRectangle
-
-  mov x7, x0
-  ;debug
-  adrp x0, DEBUG@PAGE
-  add x0, x0, DEBUG@PAGEOFF
-  bl _printf
-  mov x0, x7
-
-
-
-  sub x10, x10, #8
-  sub x11, x11, #8
-  sub x9, x9, #1
-  cmp x9, #0
-  b.ne _blockdrawloop
-
-  mov x7, x0
-  ;debug
-  adrp x0, DEBUG@PAGE
-  add x0, x0, DEBUG@PAGEOFF
-  bl _printf
-  mov x0, x7
+  sub x19, x19, #8
+  sub x20, x20, #8
+  sub x21, x21, #1
+  cbnz x21, _blockdrawloop
 
 _notactiveloop:
   bl _EndDrawing
