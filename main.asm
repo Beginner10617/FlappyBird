@@ -44,7 +44,7 @@ _main:
 ;  str x0, [x29, #-32]
 ;  str x1, [x29, #-40]
 
-  mov x0, #0; loose
+  mov x0, #0; score
   mov x1, #0; game over?
   str x0, [x29, #-48]
   str x1, [x29, #-56]
@@ -68,10 +68,10 @@ _gameloop:
   str x0, [x29, #-24]
 
   // Update
-  ldr x0, [x29, #-8]
-  cmp x0, #450
-  b.gt _gameover
-
+  ldr x0, [x29, #-56]
+  cmp x0, 0
+  b.gt _render
+  
   ldr x0, [x29, #-8]
   mov x2, #0
   ldr x2, [x29, #-16]
@@ -86,6 +86,14 @@ _checkdown:
 
 _applyPhy:
   add x0, x0, x1; posn = posn + step
+  cmp x0, #430
+  b.lt _checkupper
+  mov x0, #430
+_checkupper:
+  cmp x0, #0
+  b.gt _updateposn
+  mov x0, #0
+_updateposn:
   str x0, [x29, #-8]
   mov x1, #0
 
