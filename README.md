@@ -83,7 +83,6 @@ chmod +x assemble.sh
 * No sound effects or music
 * No restart or menu system
 * Hardcoded values for gameplay tuning
-* Minimal error handling
 
 
 This is a small experimental project intended for learning and exploration of assembly-level programming in a game development context.
