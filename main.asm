@@ -37,9 +37,11 @@ _main:
   str x1, [x29, #-8]; y posn
   
   mov x0, #0 ; UP?
-  mov x1, #0 ; DOWN?
+  mov x1, #1 ; gravity
+  mov x2, #0 ; speed
   str x0, [x29, #-16]
   str x1, [x29, #-24]
+  str x2, [x29, #-56]
 
   mov x0, #0; score
   mov x1, #0; game over?
@@ -89,32 +91,33 @@ _gameloop:
 
 _alreadyactive:
   // Input
-  mov x0, #265; #KEY_UP
+  mov x0, #32; #KEY_SPACE
   bl _IsKeyDown
   str x0, [x29, #-16]
-
-  mov x0, #264; #KEY_DOWN
-  bl _IsKeyDown
-  str x0, [x29, #-24]
 
   // Update
   ldr x0, [x29, #-40]
   cmp x0, 0
   b.gt _render
   mov x1, #0
-  ldr x0, [x29, #-8]
-  ldr x2, [x29, #-16]
-  ldr x3, [x29, #-24]
+  ldr x0, [x29, #-8] ; posn
+  ldr x2, [x29, #-16]; up?
+  ldr x3, [x29, #-56]; speed
+  ldr x4, [x29, #-24]; gravity
   cmp x2, #0
-  b.eq _checkdown
-  sub x1, x1, #5
-_checkdown:
-  cmp x3, #0
   b.eq _applyPhy
-  add x1, x1, #5
-
+  mov x4, #-1
+  mov x3, #-5
+  
 _applyPhy:
-  add x0, x0, x1; posn = posn + step
+  add x0, x0, x3; posn = posn + speed
+  add x3, x3, x4; speed= speed+ acc
+  str x3, [x29, #-56]
+  cmp x3, #5
+  b.lt _speedinlimit
+  mov x3, #5
+  str x3, [x29, #-56]
+_speedinlimit:
   cmp x0, #430
   b.lt _checkupper
   mov x0, #430
@@ -153,7 +156,7 @@ _blockupdate:
   str x0, [x19] ; x posn of the block
 
   cbz x23, _blockupdate
-  mov x22, #419
+  mov x22, #349
   bl _rand
   udiv x5, x0, x22
   msub x0, x5, x22, x0
@@ -202,7 +205,7 @@ _blockdrawloop:
 
   ldr x0, [x19]
   mov x1, x24
-  sub x1, x1, #500
+  sub x1, x1, #550
   mov x2, #20
   mov x3, #450
   mov w4, #0xffffffff
