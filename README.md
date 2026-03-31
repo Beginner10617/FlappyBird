@@ -1,8 +1,15 @@
-## Flappy Bird (ARM64 Assembly)
+# Flappy Bird (ARM64 + Raylib)
 
-A minimal Flappy Bird–style game implemented entirely in ARM64 assembly. This project demonstrates low-level game development concepts such as rendering, input handling, physics, and collision detection without relying on high-level abstractions.
+A minimal Flappy Bird-style game implemented entirely in ARM64 assembly. This project demonstrates low-level game development concepts such as rendering, input handling, physics, and collision detection without relying on high-level abstractions.
 
-### Features
+---
+## Demo
+<div align="center">
+<img src="DEMO.gif" alt="Alt text" width="400" height="250">
+</div>
+
+---
+## Features
 
 * Basic Flappy Bird gameplay
 * Rectangle-based rendering (no textures or sprites)
@@ -12,12 +19,13 @@ A minimal Flappy Bird–style game implemented entirely in ARM64 assembly. This 
 * Score tracking
 * Simple game loop using a fixed frame rate
 * “Game Over” state
+---
+## Controls
 
-### Controls
+* **Spacebar** : Make the bird jump
 
-* **Spacebar** — Make the bird jump
-
-### Technical Overview
+---
+## Technical Overview
 
 * Written in ARM64 assembly
 * Uses an external graphics/input library "raylib" (for functions like `InitWindow`, `DrawRectangle`, `IsKeyDown`, etc.)
@@ -36,10 +44,10 @@ A minimal Flappy Bird–style game implemented entirely in ARM64 assembly. This 
   * Move horizontally across the screen
   * Recycled when off-screen
   * Heights randomized using `rand`
+---
+## File Structure
 
-### File Structure
-
-* `main.asm` — Main game implementation including:
+* `main.asm` : Main game implementation including
 
   * Initialization
   * Game loop
@@ -48,8 +56,8 @@ A minimal Flappy Bird–style game implemented entirely in ARM64 assembly. This 
   * Collision detection
   * Rendering
   * Cleanup
-
-### Building
+---
+## Building
 
 You need:
 
@@ -62,31 +70,20 @@ chmod +x assemble.sh
 ./assemble.sh
 ```
 
-Adjust linker flags depending on your setup and library installation.
+---
+## Notes
 
-### Notes
-
-* No assets (images/audio) are used—everything is drawn procedurally.
+* No assets (images/audio) are used-everything is drawn procedurally.
 * No menus, UI system, or restart logic is implemented.
 * The project focuses on understanding low-level mechanics rather than polish.
 
-### Learning Goals
-
-This project is useful for exploring:
-
-* Calling conventions and ABI usage
-* Stack management and local storage
-* Interfacing assembly with external libraries
-* Game loop structure at a low level
-* Implementing physics and collision without engine support
-
-### Limitations
+---
+## Limitations
 
 * No sound effects or music
 * No restart or menu system
 * Hardcoded values for gameplay tuning
 * Minimal error handling
 
----
 
 This is a small experimental project intended for learning and exploration of assembly-level programming in a game development context.
