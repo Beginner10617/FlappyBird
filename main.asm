@@ -96,9 +96,56 @@ _alreadyactive:
   str x0, [x29, #-16]
 
   // Update
+
   ldr x0, [x29, #-40]
   cmp x0, 0
   b.gt _render
+
+  ldr x1, [x29, #-144]
+  cmp x1, #0
+  b.eq _afterCollsionCheck
+
+  // collision check
+  mov x1, #0
+  mov x8, #450
+  ldr x6, [x29, #0]
+  ldr x7, [x29, #-8]; y posn
+  sub x19, x29, #32
+  sub x20, x29, #136
+_collisionCheck:
+  add x1, x1, #1
+  cmp x1, #7
+
+  sub x19, x19, #16
+  sub x20, x20, #16
+
+  b.ge _afterCollsionCheck
+  
+  ldr x2, [x19]
+  ldr x4, [x20]
+  cbz x4, _collisionCheck
+  add x3, x2, #20
+  cmp x6, x3
+  b.gt _collisionCheck
+  add x9, x6, #20
+  cmp x9, x2
+  b.lt _collisionCheck
+  ; BLOCKS:
+  ; x - x2, x3
+  ; y - x4, x5
+  add x10, x7, #20
+  sub x4, x8, x4
+  sub x5, x4, #100
+  cmp x7, x4
+  b.gt _gameover
+  cmp x10, x5
+  b.lt _gameover
+
+
+  b _collisionCheck
+
+
+_afterCollsionCheck:
   mov x1, #0
   ldr x0, [x29, #-8] ; posn
   ldr x2, [x29, #-16]; up?
@@ -217,13 +264,14 @@ _zeroheight:
   sub x21, x21, #1
   cbnz x21, _blockdrawloop
 
+
+  ldr x0, [x29, #-40]
+  cbnz x0, _gameover
+
 _notactiveloop:
   bl _EndDrawing
 
-  ldr x0, [x29, #-40]
-  cmp x0, #0
-  b.eq _gameloop
-  b _gameover
+  b _gameloop
 
 _end:
   bl _CloseWindow
@@ -242,7 +290,7 @@ _gameover:
   bl _DrawText
   mov x0, #1
   str x0, [x29, #-40]
-  b _gameloop
+  b _notactiveloop
 
 .data 
 TITLE:
