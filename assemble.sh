@@ -6,5 +6,3 @@ clang main.o -o main \
   -I/opt/homebrew/opt/raylib/include \
   -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 rm main.o
-./main
-rm main
