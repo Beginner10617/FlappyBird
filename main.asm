@@ -155,9 +155,9 @@ _collisionCheck:
   add x10, x7, #20
   sub x4, x8, x4
   sub x5, x4, #100
-  cmp x7, x4
+  cmp x10, x4
   b.gt _gameover
-  cmp x10, x5
+  cmp x7, x5
   b.lt _gameover
 
 
