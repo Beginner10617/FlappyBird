@@ -8,6 +8,7 @@
 .extern _DrawRectangle
 .extern _DrawTriangle
 .extern _DrawText
+.extern _TextFormat
 .extern _IsKeyDown
 .extern _printf
 .extern _rand
@@ -18,7 +19,7 @@
 _main:
   stp x29, x30, [sp, #-16]!
   mov x29, sp
-  sub sp, sp, #1040 ; allocation for local vars
+  sub sp, sp, #1056 ; allocation for local vars
 
   mov x0, #800
   mov x1, #450
@@ -33,7 +34,7 @@ _main:
   mov x0, #395
   mov x1, #220
   
-  str x0, [x29, #0] ; x posn
+  str x0, [x29, #-88] ; x posn
   str x1, [x29, #-8]; y posn
   
   mov x0, #0 ; UP?
@@ -45,8 +46,10 @@ _main:
 
   mov x0, #0; score
   mov x1, #0; game over?
+  mov x2, #0; score timer
   str x0, [x29, #-32]
   str x1, [x29, #-40]
+  str x2, [x29, #-72]
 
   mov x1, #0
   ; 6 BLOCKS 
@@ -77,9 +80,23 @@ _main:
 _gameloop:
   bl _WindowShouldClose
   cbnz x0, _end
+
+  ; scoring
+  ldr x0, [x29, #-32]
+  ldr x1, [x29, #-72]
+  add x1, x1, #1
+  str x1, [x29, #-72]
+  cmp x1, #120
+  b.lt _skipscoring
+  add x0, x0, #1
+  str x0, [x29, #-32]
+  mov x1, #0
+  str x1, [x29, #-72]
+
+_skipscoring:
   
   ldr x1, [x29, #-144]
-  cbnz x0, _alreadyactive
+  cbnz x1, _alreadyactive
   ldr x0, [x29, #-136]
   add x0,x0, #1
   str x0, [x29, #-136]
@@ -108,7 +125,7 @@ _alreadyactive:
   // collision check
   mov x1, #0
   mov x8, #450
-  ldr x6, [x29, #0]
+  ldr x6, [x29, #-88]
   ldr x7, [x29, #-8]; y posn
   sub x19, x29, #32
   sub x20, x29, #136
@@ -218,13 +235,13 @@ _render:
   bl _ClearBackground
 
   // Drawing rectangle
-  ldr x0, [x29, #0]
+  ldr x0, [x29, #-88]
   ldr x1, [x29, #-8]
   adrp x2, WIDTH@PAGE
   add x2, x2, WIDTH@PAGEOFF
   ldr x2, [x2]
   mov x3, x2
-  mov w4, #0xff0000ff // RED COLORED FLAPPY BIRD WALLS
+  mov w4, #0xff0000ff // RED COLORED FLAPPY BIRD, WHITE COLORED WALLS
   bl _DrawRectangle
 
 
@@ -265,6 +282,19 @@ _zeroheight:
   cbnz x21, _blockdrawloop
 
 
+  adrp x0, SCORE@PAGE
+  add x0, x0, SCORE@PAGEOFF
+  ldr x1, [x29, #-32]
+  str x1, [sp, #0]
+  bl _TextFormat
+  
+  mov x1, #0
+  mov x2, #0
+  mov x3, #40
+  mov w4, #0xff0000ff
+  bl _DrawText
+
+
   ldr x0, [x29, #-40]
   cbnz x0, _gameover
 
@@ -276,7 +306,7 @@ _notactiveloop:
 _end:
   bl _CloseWindow
   mov w0, #0
-  add sp, sp, #1040 ; deallocation
+  add sp, sp, #1056 ; deallocation
   ldp x29, x30, [sp], #16
   ret 
 
@@ -303,3 +333,5 @@ GAME_OVER:
   .asciz "GAME OVER"
 DEBUG:
   .asciz "HERE\n"
+SCORE:
+  .asciz "SCORE: %d"
