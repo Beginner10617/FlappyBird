@@ -88,10 +88,12 @@ _gameloop:
   str x1, [x29, #-72]
   cmp x1, #120
   b.lt _skipscoring
-  add x0, x0, #1
-  str x0, [x29, #-32]
   mov x1, #0
   str x1, [x29, #-72]
+  ldr x1, [x29, #-40]
+  cbnz x1, _skipscoring
+  add x0, x0, #1
+  str x0, [x29, #-32]
 
 _skipscoring:
   
