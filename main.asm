@@ -47,37 +47,22 @@ _main:
   str x1, [x29, #-40]
 
   mov x1, #0
-  ; 11 BLOCKS 
+  ; 6 BLOCKS 
   mov x0, #0
   str x0, [x29, #-48] 
   str x1, [x29, #-152]
-  mov x0, #80
-  str x0, [x29, #-56]  
-  str x1, [x29, #-160]
   mov x0, #160
   str x0, [x29, #-64]  
   str x1, [x29, #-168]
-  mov x0, #240
-  str x0, [x29, #-72]  
-  str x1, [x29, #-176]
   mov x0, #320
   str x0, [x29, #-80]  
   str x1, [x29, #-184]
-  mov x0, #400
-  str x0, [x29, #-88]  
-  str x1, [x29, #-192]
   mov x0, #480
   str x0, [x29, #-96]  
   str x1, [x29, #-200]
-  mov x0, #560
-  str x0, [x29, #-104]  
-  str x1, [x29, #-208]
   mov x0, #640
   str x0, [x29, #-112]  
   str x1, [x29, #-216]
-  mov x0, #720
-  str x0, [x29, #-120]  
-  str x1, [x29, #-224]
   mov x0, #800
   str x0, [x29, #-128] 
   str x1, [x29, #-232]
@@ -147,24 +132,24 @@ _updateposn:
 
 
 
-  ; 11 BLOCKS 
-  sub x19, x29, #40
-  sub x20, x29, #144
+  ; 6 BLOCKS 
+  sub x19, x29, #32
+  sub x20, x29, #136
   mov x21, #0
   ldr x23, [x29, #-144]
 _blockupdate:
   add x21, x21, #1
-  cmp x21, #11
+  cmp x21, #7
   b.ge _render
-  sub x19, x19, #8
-  sub x20, x20, #8
+  sub x19, x19, #16
+  sub x20, x20, #16
 
   ldr x0, [x19]
   sub x0, x0, #1
   str x0, [x19] ; x posn of the block
-  cmp x0, #-20
+  cmp x0, #-80
   b.gt _blockupdate
-  add x0, x0, #880 
+  add x0, x0, #960 
   str x0, [x19] ; x posn of the block
 
   cbz x23, _blockupdate
@@ -217,7 +202,7 @@ _blockdrawloop:
 
   ldr x0, [x19]
   mov x1, x24
-  sub x1, x1, #480
+  sub x1, x1, #500
   mov x2, #20
   mov x3, #450
   mov w4, #0xffffffff
