@@ -28,7 +28,7 @@ A minimal Flappy Bird-style game implemented entirely in ARM64 assembly. This pr
 ## Technical Overview
 
 * Written in ARM64 assembly
-* Uses an external graphics/input library "raylib" (for functions like `InitWindow`, `DrawRectangle`, `IsKeyDown`, etc.)
+* Uses an external graphics/input library "raylib" (for functions like `InitWindow`, `DrawRectangle`, etc.)
 * Game state (position, velocity, obstacles, score) is manually managed on the stack
 * Rendering is done using simple colored rectangles:
 
